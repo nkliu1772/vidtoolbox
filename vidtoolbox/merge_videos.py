@@ -1,7 +1,7 @@
 import os
 import argparse
 import subprocess
-from nk_video_toolbox.generate_timestamps import generate_timestamps, create_file_list, display_timestamps
+from vidtoolbox.generate_timestamps import generate_timestamps, create_file_list, display_timestamps
 
 def merge_videos(video_directory, output_file=None, keep_filelist=False):
     """ 先產生 timestamps.txt，確認後再合併影片 """
