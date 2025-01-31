@@ -1,0 +1,47 @@
+# Python-related
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.env
+*.venv
+
+# Build-related
+build/
+dist/
+*.egg
+*.eggs
+*.manifest
+*.spec
+
+# Logs and debug
+*.log
+*.coverage
+coverage/
+*.cover
+htmlcov/
+
+# System-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Pytest cache
+.pytest_cache/
+
+# Temporary files
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# Output files
+output/
+timestamps.txt
