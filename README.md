@@ -66,6 +66,9 @@ vid-merge /path/to/video_folder -o output.mp4
 ---
 
 ## 📌 TODO
+- [ ] Add `--output` parameter to allow specifying the output directory
+- [ ] Add an option to merge videos in all subdirectories automatically.
+- [ ] Add en/zh language setting
 - [ ] Add `.srt` merge support (auto shift)
 - [ ] Add Windows support
 - [ ] Improve CLI usability
