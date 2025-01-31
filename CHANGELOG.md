@@ -6,17 +6,11 @@
 - 🐛 **Fixed incorrect `timestamps.txt` filename**.
 - 🛠 **Fixed issue with `vid-merge` when using relative paths**.
 
----
-
-## **2025/1/31**
 ### **v0.1.1**
 - 🐛 **Bug Fixes**:
   - Fixed an issue where `timestamps.txt` had incorrect filenames.
   - Fixed an issue where `vid-merge` failed to run in relative paths.
 
----
-
-## **2025/1/31**
 ### **v0.1.0 - Initial Release**
 - 🎉 **First official release**
   - `vid-info`: Retrieve video information (resolution, duration, file size).

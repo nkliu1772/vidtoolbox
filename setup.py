@@ -4,7 +4,7 @@ setup(
     name="vidtoolbox",
     version="0.1.2",
     packages=find_packages(),
-    install_requires=["ffmpeg-python"],  # 必要依賴
+    install_requires=["ffmpeg-python"], 
     entry_points={
         "console_scripts": [
             "vid-info=vidtoolbox.video_info:main",
