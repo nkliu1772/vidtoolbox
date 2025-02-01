@@ -15,6 +15,13 @@ dist/
 *.manifest
 *.spec
 
+# PyPI upload-related
+deploy_to_pypi.sh  # 本地部署腳本
+*.whl              # Wheel 檔案
+*.tar.gz           # 壓縮檔案
+.pypirc            # PyPI API Token 配置檔案
+deploy_to_pypi.sh  # 本地部署腳本
+
 # Logs and debug
 *.log
 *.coverage
