@@ -3,39 +3,39 @@ import argparse
 import subprocess
 
 def format_duration(seconds):
-    """將秒數轉換為 HH:MM:SS 格式"""
+    """Convert seconds to HH:MM:SS format."""
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     seconds = int(seconds % 60)
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 def create_file_list(video_directory):
-    """ 取得影片檔案並顯示順序，讓使用者確認 """
+    """Retrieve video files and display the order for user confirmation."""
     files = sorted([f for f in os.listdir(video_directory) if f.endswith('.mp4')])
 
-    print("\n📌 時間軸將使用以下影片順序:")
+    print("\n📌 The chapter timestamps will use the following video order:")
     for index, file in enumerate(files, start=1):
         print(f"  {index}. {file}")
 
-    confirm = input("\n✅ 是否確認順序？ (Y/N): ").strip().lower()
+    confirm = input("\n✅ Confirm the order? (Y/N): ").strip().lower()
     if confirm != "y":
-        print("❌ 已取消時間軸生成！")
+        print("❌ Timestamp generation canceled!")
         return None
     return files
 
 def generate_timestamps(video_directory):
-    """ 根據影片時長生成 YouTube 章節時間戳記 """
+    """Generate YouTube chapter timestamps based on video durations."""
     files = create_file_list(video_directory)
     if files is None:
         return
 
     timestamps = []
-    total_time = 0  # 累計時間
+    total_time = 0  # Accumulated time
 
     for file in files:
         file_path = os.path.join(video_directory, file)
 
-        # 取得影片時長
+        # Get video duration
         cmd_duration = [
             'ffprobe', '-v', 'error', '-select_streams', 'v:0',
             '-show_entries', 'format=duration', '-of', 'csv=p=0',
@@ -43,42 +43,42 @@ def generate_timestamps(video_directory):
         ]
         duration = float(subprocess.check_output(cmd_duration).decode().strip())
 
-        # 格式化時間
+        # Format time
         timestamp = format_duration(total_time)
-        chapter_name = os.path.splitext(file)[0]  # 去掉 .mp4 副檔名
+        chapter_name = os.path.splitext(file)[0]  # Remove .mp4 extension
         timestamps.append(f"{timestamp} - {chapter_name}")
 
-        # 更新累計時間
+        # Update accumulated time
         total_time += duration
 
-    # 預設名稱為資料夾名稱
+    # Default filename is the folder name
     folder_name = os.path.basename(os.path.normpath(video_directory))
     output_timestamps = os.path.join(video_directory, f"{folder_name}.txt")
 
-    # 寫入 `timestamps.txt`
+    # Write to `timestamps.txt`
     with open(output_timestamps, "w", encoding="utf-8") as f:
         f.write("\n".join(timestamps))
 
-    print(f"\n✅ YouTube 章節時間戳記已生成: {output_timestamps}")
+    print(f"\n✅ YouTube chapter timestamps generated: {output_timestamps}")
 
 def display_timestamps(video_directory):
-    """ 讀取並顯示 timestamps.txt 的內容 """
+    """Read and display the content of timestamps.txt."""
     folder_name = os.path.basename(os.path.normpath(video_directory))
     timestamps_path = os.path.join(video_directory, f"{folder_name}.txt")
 
     if not os.path.exists(timestamps_path):
-        print("\n❌ 找不到 `timestamps.txt`，請確認是否已經生成。")
+        print("\n❌ `timestamps.txt` not found. Please make sure it has been generated.")
         return False
 
-    print("\n📌 以下是時間軸內容:")
+    print("\n📌 Here are the chapter timestamps:")
     with open(timestamps_path, "r", encoding="utf-8") as f:
-        print(f.read())  # 直接顯示內容
+        print(f.read())  # Display content directly
 
     return True
 
 def main():
-    parser = argparse.ArgumentParser(description="單獨產生 YouTube 章節時間戳記")
-    parser.add_argument("video_directory", help="影片所在的資料夾")
+    parser = argparse.ArgumentParser(description="Generate YouTube chapter timestamps")
+    parser.add_argument("video_directory", help="Directory containing video files")
     
     args = parser.parse_args()
     generate_timestamps(args.video_directory)
