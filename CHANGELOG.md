@@ -1,5 +1,11 @@
 # **Version Changelog - 2025**
 
+## **2025/2/1**
+### **v0.1.3**
+- 🔧 **Updated version to v0.1.3** to allow new release on PyPI.
+- 🛠 **Fixed PyPI upload issue** by ensuring version number increments with each release.
+- 🏷 **Added better version management workflow** to avoid duplicate uploads.
+
 ## **2025/1/31**
 ### **v0.1.2**
 - 🎨 **Improved CLI interaction**: Now displays the merge order before confirmation.
