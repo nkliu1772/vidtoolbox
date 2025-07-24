@@ -1,9 +1,78 @@
 import os
 import argparse
 import subprocess
-from vidtoolbox.generate_timestamps import generate_timestamps, create_file_list, display_timestamps
+from vidtoolbox.generate_timestamps import (
+    generate_timestamps,
+    create_file_list,
+    display_timestamps,
+)
+from vidtoolbox.video_info import get_video_info
 
-def merge_videos(video_directory, output_file=None, keep_filelist=False):
+
+def _check_resolutions(files, video_directory, auto_reencode=False):
+    """Check if all videos share the same resolution and optionally re-encode."""
+
+    resolutions = []
+    for file in files:
+        file_path = os.path.join(video_directory, file)
+        cmd = [
+            "ffprobe",
+            "-v",
+            "error",
+            "-select_streams",
+            "v:0",
+            "-show_entries",
+            "stream=width,height",
+            "-of",
+            "csv=p=0",
+            file_path,
+        ]
+        res = subprocess.check_output(cmd).decode().strip()
+        resolutions.append(res)
+
+    if len(set(resolutions)) == 1:
+        return True
+
+    print("\n🛑 Detected different video resolutions:")
+    for file, res in zip(files, resolutions):
+        print(f"  {file}: {res}")
+
+    if auto_reencode:
+        confirm = "y"
+    else:
+        confirm = (
+            input(
+                "\n❓ Re-encode all videos to match the first resolution and continue? (Y/N): "
+            )
+            .strip()
+            .lower()
+        )
+
+    if confirm != "y":
+        print("❌ Merge canceled!")
+        return False
+
+    target_width, target_height = resolutions[0].split(",")
+    for file in files:
+        file_path = os.path.join(video_directory, file)
+        temp_path = os.path.join(video_directory, f"reencoded_{file}")
+        cmd = [
+            "ffmpeg",
+            "-i",
+            file_path,
+            "-vf",
+            f"scale={target_width}:{target_height}",
+            "-c:a",
+            "copy",
+            temp_path,
+        ]
+        subprocess.run(cmd)
+        os.replace(temp_path, file_path)
+
+    print("✅ Re-encoding completed!")
+    return True
+
+def merge_videos(video_directory, output_file=None, keep_filelist=False, reencode=False):
     """Generate timestamps.txt first, confirm, and then merge videos."""
     # Ensure timestamps.txt is up-to-date
     folder_name = os.path.basename(os.path.normpath(video_directory))
@@ -19,6 +88,9 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False):
     if not display_timestamps(video_directory):
         return
 
+    # Automatically show video information before merging
+    get_video_info(video_directory)
+
     # Confirm if the timestamps are correct
     confirm = input("\n✅ Confirm that the timestamps are correct? (Y/N): ").strip().lower()
     if confirm != "y":
@@ -28,6 +100,9 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False):
     # Ensure that the merged video does not include an existing merged file
     files = create_file_list(video_directory)
     if files is None:
+        return
+
+    if not _check_resolutions(files, video_directory, reencode):
         return
 
     # Default video name is the folder name
@@ -64,9 +139,14 @@ def main():
     parser.add_argument("video_directory", help="Directory containing video files")
     parser.add_argument("-o", "--output", help="Output video filename (default is the folder name)")
     parser.add_argument("--keep-filelist", action="store_true", help="Keep file_list.txt")
+    parser.add_argument(
+        "--reencode",
+        action="store_true",
+        help="Automatically re-encode videos with mismatched resolutions",
+    )
 
     args = parser.parse_args()
-    merge_videos(args.video_directory, args.output, args.keep_filelist)
+    merge_videos(args.video_directory, args.output, args.keep_filelist, args.reencode)
 
 if __name__ == "__main__":
     main()

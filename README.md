@@ -5,6 +5,7 @@
 - 🔍 **Retrieving video information** (resolution, duration, file size)
 - 📝 **Generating YouTube chapter timestamps** (`timestamps.txt`)
 - 🎬 **Merging multiple video files**
+- 🛡️ **Resolution check with optional re-encoding**
 - 🏷️ **Automatically naming output files based on the folder name**
 
 This tool works on **macOS** and **Linux**, utilizing `ffmpeg` for video processing.
@@ -56,11 +57,24 @@ vid-timestamps /path/to/video_folder
 ```bash
 vid-merge /path/to/video_folder
 ```
+🔹 Automatically shows video information before merging.
 🔹 Confirms timestamps before merging videos.
+🔹 Checks for mixed resolutions and offers to re-encode if needed.
 
 🔹 The default output file name is **the folder name**, but you can specify an output file with `-o`:
 ```bash
 vid-merge /path/to/video_folder -o output.mp4
+```
+
+Example re-encode prompt:
+```bash
+vid-merge /path/to/video_folder
+? Re-encode all videos to match the first resolution and continue? (Y/N):
+```
+
+You can skip the prompt and force re-encoding:
+```bash
+vid-merge /path/to/video_folder --reencode
 ```
 
 ---

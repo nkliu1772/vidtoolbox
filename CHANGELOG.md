@@ -1,6 +1,10 @@
 # **Version Changelog - 2025**
 
 ## **2025/2/1**
+### **v0.1.4**
+- ➕ **Resolution check before merging** with optional automatic re-encoding.
+- 🔍 **vid-info now runs automatically before merging**.
+
 ### **v0.1.3**
 - 🔧 **Updated version to v0.1.3** to allow new release on PyPI.
 - 🛠 **Fixed PyPI upload issue** by ensuring version number increments with each release.
