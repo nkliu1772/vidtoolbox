@@ -57,6 +57,7 @@ vid-timestamps /path/to/video_folder
 vid-merge /path/to/video_folder
 ```
 🔹 Confirms timestamps before merging videos.
+🔹 If `ffmpeg` fails during the merge, an error message is displayed instead of a success notice.
 
 🔹 The default output file name is **the folder name**, but you can specify an output file with `-o`:
 ```bash
