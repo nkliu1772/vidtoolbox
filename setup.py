@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="vidtoolbox",
-    version="0.1.3",
+    version="0.1.4",
     author="nkliu1772",
     description="A Python toolbox for managing and processing videos efficiently.",
     long_description=long_description,

@@ -3,7 +3,26 @@ import argparse
 import subprocess
 from vidtoolbox.generate_timestamps import generate_timestamps, create_file_list, display_timestamps
 
-def merge_videos(video_directory, output_file=None, keep_filelist=False):
+
+def check_consistent_resolution(video_directory):
+    """Return True if all mp4 files share the same resolution."""
+    files = [f for f in os.listdir(video_directory) if f.endswith(".mp4")]
+    resolution = None
+    for file in files:
+        file_path = os.path.join(video_directory, file)
+        cmd = [
+            "ffprobe", "-v", "error", "-select_streams", "v:0",
+            "-show_entries", "stream=width,height", "-of", "csv=p=0",
+            file_path,
+        ]
+        output = subprocess.check_output(cmd).decode().strip()
+        if resolution is None:
+            resolution = output
+        elif output != resolution:
+            return False
+    return True
+
+def merge_videos(video_directory, output_file=None, keep_filelist=False, reencode=False):
     """Generate timestamps.txt first, confirm, and then merge videos."""
     # Ensure timestamps.txt is up-to-date
     folder_name = os.path.basename(os.path.normpath(video_directory))
@@ -30,6 +49,17 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False):
     if files is None:
         return
 
+    # Check video resolutions
+    consistent = check_consistent_resolution(video_directory)
+    if not consistent:
+        print("\n⚠️ Videos have different resolutions.")
+        if not reencode:
+            proceed = input("Re-encode videos before merging? (Y/N): ").strip().lower()
+            if proceed != "y":
+                print("❌ Merge canceled!")
+                return
+        reencode = True
+
     # Default video name is the folder name
     if not output_file:
         output_file = os.path.join(video_directory, f"{folder_name}.mp4")
@@ -46,10 +76,17 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False):
 
     print(f"\n🚀 **Starting video merge, output file:** {output_file}\n")
 
-    cmd = [
-        "ffmpeg", "-f", "concat", "-safe", "0",
-        "-i", file_list_path, "-c", "copy", output_file
-    ]
+    if reencode:
+        cmd = [
+            "ffmpeg", "-f", "concat", "-safe", "0", "-i", file_list_path,
+            "-c:v", "libx264", "-preset", "slow", "-crf", "18",
+            "-c:a", "aac", "-b:a", "192k", output_file
+        ]
+    else:
+        cmd = [
+            "ffmpeg", "-f", "concat", "-safe", "0",
+            "-i", file_list_path, "-c", "copy", output_file
+        ]
     
     subprocess.run(cmd)
     print(f"✅ Video merge completed! Output file: {output_file}")
@@ -64,9 +101,10 @@ def main():
     parser.add_argument("video_directory", help="Directory containing video files")
     parser.add_argument("-o", "--output", help="Output video filename (default is the folder name)")
     parser.add_argument("--keep-filelist", action="store_true", help="Keep file_list.txt")
+    parser.add_argument("--reencode", action="store_true", help="Re-encode videos before merging")
 
     args = parser.parse_args()
-    merge_videos(args.video_directory, args.output, args.keep_filelist)
+    merge_videos(args.video_directory, args.output, args.keep_filelist, args.reencode)
 
 if __name__ == "__main__":
     main()

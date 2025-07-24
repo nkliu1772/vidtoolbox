@@ -1,5 +1,10 @@
 # **Version Changelog - 2025**
 
+## **2025/2/2**
+### **v0.1.4**
+- 🚀 **Added optional re-encoding in vid-merge** using the `--reencode` flag.
+- 🛠 **Videos with different resolutions now trigger a prompt before merging.**
+
 ## **2025/2/1**
 ### **v0.1.3**
 - 🔧 **Updated version to v0.1.3** to allow new release on PyPI.
