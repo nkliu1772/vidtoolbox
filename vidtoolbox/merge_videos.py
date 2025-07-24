@@ -135,7 +135,11 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False, reencod
             "-i", file_list_path, "-c", "copy", output_file
         ]
     
-    subprocess.run(cmd)
+    result = subprocess.run(cmd)
+    if result.returncode != 0:
+        print(f"❌ Video merge failed with return code {result.returncode}")
+        return
+
     print(f"✅ Video merge completed! Output file: {output_file}")
 
     # **Automatically delete file_list.txt**
