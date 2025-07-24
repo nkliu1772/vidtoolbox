@@ -3,8 +3,13 @@ import argparse
 import subprocess
 from typing import Tuple
 
-from vidtoolbox.generate_timestamps import generate_timestamps, create_file_list, display_timestamps
+from vidtoolbox.generate_timestamps import (
+    generate_timestamps,
+    create_file_list,
+    display_timestamps,
+)
 from vidtoolbox.video_info import get_video_info
+import shutil
 
 
 def check_consistent_resolution(video_directory: str) -> Tuple[bool, str]:
@@ -51,27 +56,74 @@ def check_consistent_resolution(video_directory: str) -> Tuple[bool, str]:
     return True, ""
 
 
-def check_consistent_resolution(video_directory):
-    """Return True if all mp4 files share the same resolution."""
-    files = [f for f in os.listdir(video_directory) if f.endswith(".mp4")]
-    resolution = None
+def ensure_uniform_format_resolution(video_directory: str) -> Tuple[str, str]:
+    """Ensure all videos are MP4 and share the same resolution.
+
+    If a mismatch is found, videos are converted to match the resolution of the
+    first video and stored in a temporary ``converted`` directory. The path to
+    the directory used for merging and the temporary directory (if any) are
+    returned.
+    """
+
+    video_exts = (".mp4", ".mkv", ".mov", ".avi", ".flv", ".wmv", ".webm")
+    files = [f for f in os.listdir(video_directory) if f.lower().endswith(video_exts)]
+    if not files:
+        return video_directory, ""
+
+    first_path = os.path.join(video_directory, files[0])
+    cmd = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=width,height",
+        "-of",
+        "csv=p=0",
+        first_path,
+    ]
+    output = subprocess.check_output(cmd).decode().strip()
+    base_width, base_height = map(int, output.split(","))
+
+    need_conversion = False
     for file in files:
         file_path = os.path.join(video_directory, file)
-        cmd = [
-            "ffprobe", "-v", "error", "-select_streams", "v:0",
-            "-show_entries", "stream=width,height", "-of", "csv=p=0",
-            file_path,
-        ]
-        output = subprocess.check_output(cmd).decode().strip()
-        if resolution is None:
-            resolution = output
-        elif output != resolution:
-            return False
-    return True
+        cmd[10] = file_path  # update path in ffprobe command
+        info = subprocess.check_output(cmd).decode().strip()
+        width, height = map(int, info.split(","))
+        if os.path.splitext(file)[1].lower() != ".mp4" or (width, height) != (
+            base_width,
+            base_height,
+        ):
+            need_conversion = True
+            break
+
+    if not need_conversion:
+        return video_directory, ""
+
+    converted_dir = os.path.join(video_directory, "converted")
+    os.makedirs(converted_dir, exist_ok=True)
+    print("\n⚙️ Converting videos to a uniform format and resolution...")
+
+    for file in files:
+        src = os.path.join(video_directory, file)
+        dst = os.path.join(converted_dir, os.path.splitext(file)[0] + ".mp4")
+
+        cmd = ["ffmpeg", "-i", src]
+        cmd += ["-vf", f"scale={base_width}:{base_height}"]
+        cmd += ["-c:v", "libx264", "-preset", "slow", "-crf", "18"]
+        cmd += ["-c:a", "aac", "-b:a", "192k", dst]
+
+        subprocess.run(cmd, check=True)
+
+    print("✅ Conversion completed.")
+
+    return converted_dir, converted_dir
+
 
 def merge_videos(video_directory, output_file=None, keep_filelist=False, reencode=False):
-    """Generate timestamps.txt first, confirm, and then merge videos."""
-    # Ensure timestamps.txt is up-to-date
+    """Merge videos after ensuring consistent format and resolution."""
     folder_name = os.path.basename(os.path.normpath(video_directory))
     timestamps_path = os.path.join(video_directory, f"{folder_name}.txt")
 
@@ -79,10 +131,11 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False, reencod
         print(f"\n🛑 Detected an existing `{folder_name}.txt`, regenerating...")
         os.remove(timestamps_path)
 
-    generate_timestamps(video_directory)  # Generate timestamps.txt first
+    work_dir, temp_dir = ensure_uniform_format_resolution(video_directory)
 
-    # Read and display `timestamps.txt`
-    if not display_timestamps(video_directory):
+    generate_timestamps(work_dir)
+
+    if not display_timestamps(work_dir):
         return
 
     # Confirm if the timestamps are correct
@@ -91,34 +144,25 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False, reencod
         print("❌ Merge canceled!")
         return
 
-    # Ensure that the merged video does not include an existing merged file
-    files = create_file_list(video_directory)
+    files = create_file_list(work_dir)
     if files is None:
         return
 
-    # Check video resolutions
-    consistent = check_consistent_resolution(video_directory)
+    consistent, _ = check_consistent_resolution(work_dir)
     if not consistent:
-        print("\n⚠️ Videos have different resolutions.")
-        if not reencode:
-            proceed = input("Re-encode videos before merging? (Y/N): ").strip().lower()
-            if proceed != "y":
-                print("❌ Merge canceled!")
-                return
         reencode = True
 
-    # Default video name is the folder name
     if not output_file:
         output_file = os.path.join(video_directory, f"{folder_name}.mp4")
     else:
         output_file = os.path.join(video_directory, output_file)
 
     # Generate file_list.txt
-    file_list_path = os.path.join(video_directory, "file_list.txt")
+    file_list_path = os.path.join(work_dir, "file_list.txt")
     with open(file_list_path, "w") as f:
         for file in files:
             # Use the correct absolute path to avoid multi-directory issues
-            file_path = os.path.abspath(os.path.join(video_directory, file))
+            file_path = os.path.abspath(os.path.join(work_dir, file))
             f.write(f"file '{file_path}'\n")
 
     print(f"\n🚀 **Starting video merge, output file:** {output_file}\n")
@@ -142,13 +186,17 @@ def merge_videos(video_directory, output_file=None, keep_filelist=False, reencod
 
     print(f"✅ Video merge completed! Output file: {output_file}")
 
-    # **Automatically delete file_list.txt**
     if not keep_filelist:
         os.remove(file_list_path)
         print("🧹 `file_list.txt` deleted")
 
+    if temp_dir:
+        shutil.rmtree(temp_dir)
+
 def main():
-    parser = argparse.ArgumentParser(description="Merge multiple .mp4 videos and ensure timestamps.txt is confirmed first")
+    parser = argparse.ArgumentParser(
+        description="Merge multiple videos and ensure timestamps.txt is confirmed first"
+    )
     parser.add_argument("video_directory", help="Directory containing video files")
     parser.add_argument("-o", "--output", help="Output video filename (default is the folder name)")
     parser.add_argument("--keep-filelist", action="store_true", help="Keep file_list.txt")

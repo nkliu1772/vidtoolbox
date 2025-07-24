@@ -5,6 +5,11 @@
 - 🚀 **Added optional re-encoding in vid-merge** using the `--reencode` flag.
 - 🛠 **Videos with different resolutions now trigger a prompt before merging.**
 
+## **2025/2/3**
+### **v0.1.5**
+- 🚀 **Automatically converts videos with differing formats or resolutions before merging.**
+- 🛠 **`--reencode` now applies only to the final output.**
+
 ## **2025/2/1**
 ### **v0.1.3**
 - 🔧 **Updated version to v0.1.3** to allow new release on PyPI.

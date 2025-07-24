@@ -2,7 +2,7 @@
 vidtoolbox - A simple video processing toolbox for merging, timestamping, and analyzing videos.
 """
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 # Core modules
 from .video_info import get_video_info

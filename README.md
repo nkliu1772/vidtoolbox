@@ -63,7 +63,8 @@ vid-merge /path/to/video_folder
 ```bash
 vid-merge /path/to/video_folder -o output.mp4
 ```
-🔹 Use `--reencode` to force re-encoding if the videos have different resolutions.
+🔹 Videos with different formats or resolutions are automatically converted before merging.
+🔹 Use `--reencode` to force re-encoding of the final output.
 
 ---
 
