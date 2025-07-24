@@ -1,7 +1,54 @@
 import os
 import argparse
 import subprocess
+from typing import Tuple
+
 from vidtoolbox.generate_timestamps import generate_timestamps, create_file_list, display_timestamps
+from vidtoolbox.video_info import get_video_info
+
+
+def check_consistent_resolution(video_directory: str) -> Tuple[bool, str]:
+    """Check if all videos share the same resolution and display info.
+
+    Parameters
+    ----------
+    video_directory: str
+        Directory containing ``.mp4`` files.
+
+    Returns
+    -------
+    tuple
+        ``(True, "")`` if all files have the same resolution. ``(False, details)``
+        when a mismatch is found where ``details`` describes the offending
+        files and their resolutions.
+    """
+
+    # Display basic video information for the user
+    get_video_info(video_directory)
+
+    files = [f for f in os.listdir(video_directory) if f.endswith(".mp4")]
+    base_resolution = None
+    mismatches = []
+
+    for file in files:
+        file_path = os.path.join(video_directory, file)
+        cmd = [
+            "ffprobe", "-v", "error", "-select_streams", "v:0",
+            "-show_entries", "stream=width,height", "-of", "csv=p=0",
+            file_path,
+        ]
+        output = subprocess.check_output(cmd).decode().strip()
+        width, height = map(int, output.split(","))
+        if base_resolution is None:
+            base_resolution = (width, height)
+        elif (width, height) != base_resolution:
+            mismatches.append(f"{file}: {width}x{height}")
+
+    if mismatches:
+        details = "\n".join(mismatches)
+        return False, details
+
+    return True, ""
 
 def merge_videos(video_directory, output_file=None, keep_filelist=False):
     """Generate timestamps.txt first, confirm, and then merge videos."""

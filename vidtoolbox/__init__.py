@@ -7,4 +7,4 @@ __version__ = "0.1.3"
 # Core modules
 from .video_info import get_video_info
 from .generate_timestamps import generate_timestamps
-from .merge_videos import merge_videos
+from .merge_videos import merge_videos, check_consistent_resolution
