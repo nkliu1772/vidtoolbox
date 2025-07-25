@@ -60,6 +60,8 @@ example_usage.py
 test_file_list.py
 test_file_list_auto.py
 test_encoding_fix.py
+test_video_specs.py
+test_merge_improvements.py
 simple_test.py
 
 # Generated test files

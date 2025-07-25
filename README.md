@@ -6,6 +6,7 @@
 - 📝 **Generating YouTube chapter timestamps** (`timestamps.txt`)
 - 🎬 **Merging multiple video files**
 - 📄 **Automatically generating `file_list.txt` for ffmpeg concat**
+- 🔍 **Video compatibility checking and smart merging**
 - 🏷️ **Automatically naming output files based on the folder name**
 
 This tool works on **Windows**, **macOS** and **Linux**, utilizing `ffmpeg` for video processing.
@@ -58,6 +59,8 @@ vid-timestamps /path/to/video_folder
 vid-merge /path/to/video_folder
 ```
 🔹 Confirms timestamps before merging videos.
+
+🔹 **Smart merging**: Automatically checks video compatibility and offers re-encoding options if needed.
 
 🔹 The default output file name is **the folder name**, but you can specify an output file with `-o`:
 ```bash
