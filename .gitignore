@@ -52,3 +52,26 @@ desktop.ini
 # Output files
 output/
 timestamps.txt
+
+# Test files and directories
+test_videos/
+test_*.py
+example_usage.py
+test_file_list.py
+test_file_list_auto.py
+test_encoding_fix.py
+simple_test.py
+
+# Generated test files
+file_list.txt
+test_list.txt
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Test output files
+merged_video.mp4
+output.mp4
+final_video.mp4
+test_output.mp4

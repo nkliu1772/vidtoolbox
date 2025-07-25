@@ -5,9 +5,10 @@
 - 🔍 **Retrieving video information** (resolution, duration, file size)
 - 📝 **Generating YouTube chapter timestamps** (`timestamps.txt`)
 - 🎬 **Merging multiple video files**
+- 📄 **Automatically generating `file_list.txt` for ffmpeg concat**
 - 🏷️ **Automatically naming output files based on the folder name**
 
-This tool works on **macOS** and **Linux**, utilizing `ffmpeg` for video processing.
+This tool works on **Windows**, **macOS** and **Linux**, utilizing `ffmpeg` for video processing.
 
 ---
 
@@ -61,6 +62,45 @@ vid-merge /path/to/video_folder
 🔹 The default output file name is **the folder name**, but you can specify an output file with `-o`:
 ```bash
 vid-merge /path/to/video_folder -o output.mp4
+```
+
+### **4️⃣ Generate File List for FFmpeg Concat**
+```bash
+vid-filelist /path/to/video_folder
+```
+🔹 Automatically generates `file_list.txt` for ffmpeg concat operations.
+
+🔹 Options:
+```bash
+# 指定輸出檔案名稱
+vid-filelist /path/to/video_folder -o my_list.txt
+
+# 指定檔案模式
+vid-filelist /path/to/video_folder -p "*.mp4"
+
+# 不按檔案名稱排序
+vid-filelist /path/to/video_folder --no-sort
+
+# 顯示合併命令
+vid-filelist /path/to/video_folder --show-merge-cmd
+```
+
+### **5️⃣ Quick Merge Videos**
+```bash
+vid-quick-merge /path/to/video_folder
+```
+🔹 Automatically generates `file_list.txt` and merges videos in one step.
+
+🔹 Options:
+```bash
+# 指定輸出檔案名稱
+vid-quick-merge /path/to/video_folder -o merged_video.mp4
+
+# 保留 file_list.txt
+vid-quick-merge /path/to/video_folder --keep-filelist
+
+# 使用現有的 file_list.txt
+vid-quick-merge /path/to/video_folder --use-existing-list
 ```
 
 ---
