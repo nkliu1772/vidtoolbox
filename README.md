@@ -1,5 +1,11 @@
 # **VidToolbox**
 
+[English](README.md) | [繁體中文](README_ZH.md)
+
+📋 **Changelog**: [English](CHANGELOG_EN.md) | [繁體中文](CHANGELOG_ZH.md)
+
+🧪 **Testing Guide**: [English](TESTING_GUIDE_EN.md) | [繁體中文](TESTING_GUIDE.md)
+
 ## 📌 Introduction
 **VidToolbox** is a video processing tool that supports:
 - 🔍 **Retrieving video information** (resolution, duration, file size)
@@ -7,6 +13,7 @@
 - 🎬 **Merging multiple video files**
 - 📄 **Automatically generating `file_list.txt` for ffmpeg concat**
 - 🔍 **Video compatibility checking and smart merging**
+- 🎵 **Converting videos to MP3 audio files**
 - 🏷️ **Automatically naming output files based on the folder name**
 
 This tool works on **Windows**, **macOS** and **Linux**, utilizing `ffmpeg` for video processing.
@@ -105,6 +112,41 @@ vid-quick-merge /path/to/video_folder --keep-filelist
 # 使用現有的 file_list.txt
 vid-quick-merge /path/to/video_folder --use-existing-list
 ```
+
+### **6️⃣ Convert Videos to MP3**
+```bash
+vid-mp3 /path/to/video_folder
+```
+🔹 Converts video files to MP3 audio files for transcription or audio processing.
+
+🔹 Options:
+```bash
+# 基本轉換
+vid-mp3 /path/to/video_folder
+
+# 指定品質 (0=最高品質, 9=最低品質)
+vid-mp3 /path/to/video_folder -q 0
+
+# 指定輸出目錄
+vid-mp3 /path/to/video_folder -o /path/to/output
+
+# 遞迴搜尋子目錄
+vid-mp3 /path/to/video_folder -r
+
+# 覆蓋現有檔案
+vid-mp3 /path/to/video_folder --overwrite
+
+# 顯示品質預設值說明
+vid-mp3 --show-quality
+```
+
+🔹 **Quality Presets**:
+- `0`: 最高品質 (320kbps)
+- `2`: 高品質 (192kbps) - 推薦
+- `4`: 中等品質 (128kbps)
+- `6`: 較低品質 (96kbps)
+- `8`: 低品質 (64kbps)
+- `9`: 最低品質 (32kbps)
 
 ---
 

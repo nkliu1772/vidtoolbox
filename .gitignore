@@ -62,7 +62,14 @@ test_file_list_auto.py
 test_encoding_fix.py
 test_video_specs.py
 test_merge_improvements.py
+test_mp3_conversion.py
+test_multilingual_docs.py
+quick_test.py
+simple_test_runner.py
 simple_test.py
+
+# Documentation files
+CHANGELOG.md
 
 # Generated test files
 file_list.txt

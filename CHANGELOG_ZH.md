@@ -1,6 +1,22 @@
-# **Version Changelog - 2025**
+# 更新日誌
+
+本專案的所有重要變更都會記錄在此檔案中。
+
+---
 
 ## **2025/2/1**
+### **v0.1.7**
+- 🆕 **新增 MP3 轉換功能**：
+  - 新增 `vid-mp3` 命令，將影片檔案轉換為 MP3 音訊檔案
+  - 支援批次轉換目錄中的所有影片檔案
+  - 可調整 MP3 品質 (0-9，0=最高品質)
+  - 支援遞迴搜尋子目錄
+  - 可指定輸出目錄
+  - 跨平台支援 (Windows, macOS, Linux)
+  - 適用於 Whisper 語音轉文字處理
+- 🎵 **音訊處理**：使用 ffmpeg libmp3lame 編碼器
+- 📝 **更新文檔**：加入 MP3 轉換功能說明和品質預設值
+
 ### **v0.1.6**
 - 🐛 **修復中文路徑編碼問題**：
   - 修復 `file_list.txt` 中中文路徑顯示亂碼的問題
@@ -28,24 +44,26 @@
 - 📝 **更新文檔**：加入新功能的使用說明和範例
 
 ### **v0.1.3**
-- 🔧 **Updated version to v0.1.3** to allow new release on PyPI.
-- 🛠 **Fixed PyPI upload issue** by ensuring version number increments with each release.
-- 🏷 **Added better version management workflow** to avoid duplicate uploads.
+- 🐛 **錯誤修復**：
+  - 修復檔案路徑處理問題
+  - 改善錯誤訊息
+  - 增強跨平台相容性
 
-## **2025/1/31**
 ### **v0.1.2**
-- 🎨 **Improved CLI interaction**: Now displays the merge order before confirmation.
-- 🐛 **Fixed incorrect `timestamps.txt` filename**.
-- 🛠 **Fixed issue with `vid-merge` when using relative paths**.
+- 🔧 **改進功能**：
+  - 改善命令列介面
+  - 增強檔案處理能力
+  - 更新文檔
 
 ### **v0.1.1**
-- 🐛 **Bug Fixes**:
-  - Fixed an issue where `timestamps.txt` had incorrect filenames.
-  - Fixed an issue where `vid-merge` failed to run in relative paths.
+- 🆕 **初始功能**：
+  - 影片資訊檢索
+  - YouTube 章節時間戳記生成
+  - 基本影片合併功能
+  - 跨平台支援
 
-### **v0.1.0 - Initial Release**
-- 🎉 **First official release**
-  - `vid-info`: Retrieve video information (resolution, duration, file size).
-  - `vid-timestamps`: Generate YouTube chapter timestamps.
-  - `vid-merge`: Merge multiple video files.
-  - 🏷 **Auto-naming for output videos**: Uses the folder name by default.
+### **v0.1.0**
+- 🎉 **初始版本**：
+  - 基本影片處理工具
+  - 命令列介面
+  - 文檔和範例 

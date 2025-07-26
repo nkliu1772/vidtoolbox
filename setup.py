@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="vidtoolbox",
-    version="0.1.6",
+    version="0.1.7",
     author="nkliu1772",
     description="A Python toolbox for managing and processing videos efficiently.",
     long_description=long_description,
@@ -32,6 +32,7 @@ setup(
             "vid-timestamps=vidtoolbox.generate_timestamps:main",
             "vid-filelist=vidtoolbox.generate_file_list:main",
             "vid-quick-merge=vidtoolbox.quick_merge:main",
+            "vid-mp3=vidtoolbox.convert_to_mp3:main",
         ],
     },
 )
