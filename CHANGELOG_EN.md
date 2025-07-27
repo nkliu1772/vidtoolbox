@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 ---
 
 ## **2025/2/1**
+### **v0.1.8**
+- 🆕 **New Subtitle Merge Feature**:
+  - Added `vid-subtitles` command to merge multiple `.srt` subtitle files
+  - Automatic time shifting based on corresponding video durations
+  - Sequential re-indexing of subtitle entries
+  - Support for UTF-8 encoding and international characters
+  - Cross-platform compatibility (Windows, macOS, Linux)
+  - Interactive file order confirmation
+- 🎬 **Subtitle Processing**: Uses Python `srt` package for subtitle manipulation
+- 📝 **Documentation**: Added subtitle merge feature description and usage examples
+
 ### **v0.1.7**
 - 🆕 **New MP3 Conversion Feature**:
   - Added `vid-mp3` command to convert video files to MP3 audio files

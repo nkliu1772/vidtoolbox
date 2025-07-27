@@ -148,6 +148,36 @@ vid-mp3 --show-quality
 - `8`: 低品質 (64kbps)
 - `9`: 最低品質 (32kbps)
 
+### **7️⃣ Merge Subtitle Files**
+```bash
+vid-subtitles /path/to/video_folder
+```
+🔹 Merges multiple `.srt` subtitle files in order, with automatic time shifting and re-indexing.
+
+🔹 Options:
+```bash
+# 基本合併
+vid-subtitles /path/to/video_folder
+
+# 指定輸出檔案
+vid-subtitles /path/to/video_folder -o merged_subtitles.srt
+
+# 指定字幕檔案模式
+vid-subtitles /path/to/video_folder -p "*.srt"
+
+# 指定影片檔案模式 (用於計算時間偏移)
+vid-subtitles /path/to/video_folder -v "*.mp4"
+
+# 不確認檔案順序
+vid-subtitles /path/to/video_folder --no-confirm
+```
+
+🔹 **Features**:
+- Automatically sorts subtitle files by name
+- Shifts timing based on corresponding video durations
+- Re-indexes subtitle entries sequentially
+- Supports UTF-8 encoding for international characters
+
 ---
 
 ## 📌 TODO

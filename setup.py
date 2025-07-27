@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="vidtoolbox",
-    version="0.1.7",
+    version="0.1.8",
     author="nkliu1772",
     description="A Python toolbox for managing and processing videos efficiently.",
     long_description=long_description,
@@ -15,6 +15,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "ffmpeg-python",
+        "srt",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -33,6 +34,7 @@ setup(
             "vid-filelist=vidtoolbox.generate_file_list:main",
             "vid-quick-merge=vidtoolbox.quick_merge:main",
             "vid-mp3=vidtoolbox.convert_to_mp3:main",
+            "vid-subtitles=vidtoolbox.add_subtitles:main",
         ],
     },
 )
